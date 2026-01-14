@@ -1,38 +1,58 @@
+# scraper.py
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 
-def scrape_property(url):
-    """
-    Simulates a real estate scraper. 
-    In a production app, you'd use headers to avoid bot detection.
-    """
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    }
-    
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; PropertyBriefBot/1.0; +https://yourdomain.example)"
+}
+
+def is_allowed_url(url):
     try:
-        # we can handle real URLs or return mock data 
-        # if the site blocks the request (common with Zillow)
-        response = requests.get(url, headers=headers, timeout=10)
+        parsed = urlparse(url)
+        return parsed.scheme in ("http", "https")
+    except Exception:
+        return False
 
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.content, 'html.parser')
-            # These selectors are generic; in a real role, we'll customize per site
-            price = soup.find("span", {"id": "price"}).text if soup.find("span", {"id": "price"}) else "$2,500,000"
-            sqft = "3,200" # Dummy extraction for the flow
-            
-            return {
-                "source": "web_listing",
-                "price": price,
-                "sqft": sqft,
-                "beds": 3
-            }
+def scrape_property(url, timeout=10):
+    if not is_allowed_url(url):
+        raise ValueError("Invalid URL")
+
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=timeout)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.content, "html.parser")
+
+        # Site-agnostic best-effort extraction
+        title = soup.title.string.strip() if soup.title else ""
+        price = None
+        # Try common patterns
+        selectors = [
+            {"name": "span", "attrs": {"id": "price"}},
+            {"name": "span", "attrs": {"class": "price"}},
+            {"name": "div", "attrs": {"class": "ds-summary-row"}}
+        ]
+        for sel in selectors:
+            el = soup.find(sel["name"], sel["attrs"])
+            if el and el.get_text(strip=True):
+                price = el.get_text(strip=True)
+                break
+
+        # fallback: search for $ pattern
+        if not price:
+            text = soup.get_text(" ", strip=True)
+            import re
+            m = re.search(r"\$\s?[\d,]+", text)
+            price = m.group(0) if m else None
+
+        # Collect provenance snippets
+        snippets = []
+        if price:
+            snippets.append({"field": "price", "value": price})
+        if title:
+            snippets.append({"field": "title", "value": title})
+
+        return {"source": url, "price": price, "snippets": snippets, "raw_html_excerpt": resp.text[:2000]}
     except Exception as e:
-        print(f"Scraping failed: {e}")
-        # Return mock data so the agent flow doesn't break during your demo
-        return {
-            "source": "mock_web_listing",
-            "price": "$2,450,000",
-            "sqft": "3,200",
-            "beds": 3
-        }
+        # Return structured mock or raise depending on your demo needs
+        return {"source": "error", "error": str(e)}
