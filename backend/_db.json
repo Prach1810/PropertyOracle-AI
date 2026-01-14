@@ -1,0 +1,148 @@
+[
+  {
+    "property_id": "prop_0001",
+    "source_url": "https://example-listing.com/123-main-st",
+    "address": { "line1": "123 Main St", "city": "Urbana", "state": "IL", "zip": "61801" },
+    "listing": {
+      "price": 425000,
+      "beds": 3,
+      "baths": 2,
+      "sqft": 1850,
+      "lot_sqft": 6000,
+      "year_built": 1995,
+      "listing_date": "2025-11-01"
+    },
+    "agent": { "name": "Jane Doe", "phone": "555-555-5555", "broker": "Acme Realty" },
+    "description": "Charming 3 bed home near downtown.",
+    "images": [],
+    "sources": [
+      {
+        "source": "https://example-listing.com/123-main-st",
+        "extracted_at": "2026-01-14T20:00:00Z",
+        "snippets": [
+          { "field": "price", "text": "$425,000" },
+          { "field": "beds", "text": "3 beds" }
+        ]
+      }
+    ],
+    "ground_truth": true,
+    "created_at": "2026-01-14T20:00:00Z",
+    "updated_at": "2026-01-14T20:00:00Z"
+  },
+  {
+    "property_id": "prop_0002",
+    "source_url": "https://example-listing.com/456-elm-st",
+    "address": { "line1": "456 Elm St", "city": "Champaign", "state": "IL", "zip": "61820" },
+    "listing": {
+      "price": 350000,
+      "beds": 2,
+      "baths": 1.5,
+      "sqft": 1400,
+      "year_built": 1980,
+      "listing_date": "2025-12-15"
+    },
+    "agent": { "name": "John Smith", "phone": "555-666-7777", "broker": "Neighborhood Homes" },
+    "description": "Updated bungalow with large yard.",
+    "images": [],
+    "sources": [
+      {
+        "source": "https://example-listing.com/456-elm-st",
+        "extracted_at": "2026-01-14T20:00:00Z",
+        "snippets": [
+          { "field": "price", "text": "$350,000" },
+          { "field": "sqft", "text": "1,400 sqft" }
+        ]
+      }
+    ],
+    "ground_truth": true,
+    "created_at": "2026-01-14T20:00:00Z",
+    "updated_at": "2026-01-14T20:00:00Z"
+  },
+  {
+  "property_id": "greenst_001_stoneway",
+  "source_url": "https://www.greenstrealty.com/properties/profile/stoneway-condos",
+  "address": {
+    "line1": "Stoneway Condos",
+    "line2": "",
+    "city": "CHAMPAIGN",
+    "state": "IL",
+    "zip": "61820"
+  },
+  "listing": {
+    "price": 1995,
+    "beds": 3,
+    "baths": 2.5,
+    "sqft": 1470,
+    "lot_sqft": null,
+    "year_built": 2005,
+    "listing_date": "2026-01-10"
+  },
+  "agent": {
+    "name": "Green Street Realty",
+    "phone": "217-356-8750",
+    "broker": "Green Street Realty"
+  },
+  "description": "Bright 3‑bed condo in Stoneway Condos with updated kitchen, in‑unit laundry, walk in closet and secure parking.",
+  "images": [],
+  "sources": [
+    {
+      "source": "https://www.greenstrealty.com/properties/profile/stoneway-condos",
+      "extracted_at": "2026-01-14T22:00:00Z",
+      "snippets": [
+        { "field": "price", "text": "$1995" },
+        { "field": "beds", "text": "3 beds" },
+        { "field": "sqft", "text": "1470 sq ft" }
+      ]
+    }
+  ],
+  "ground_truth": true,
+  "verified_by": "seed_script",
+  "created_at": "2026-01-14T22:00:00Z",
+  "updated_at": "2026-01-14T22:00:00Z"
+},
+{
+  "property_id": "greenst_002_state_st",
+  "source_url": "https://www.greenstrealty.com/properties/profile/304-s-state-st",
+  "address": {
+    "line1": "304 S. STATE ST",
+    "line2": "",
+    "city": "CHAMPAIGN",
+    "state": "IL",
+    "zip": "61820"
+  },
+  "listing": {
+    "price": 895,
+    "beds": 3,
+    "baths": 1,
+    "sqft": 1050,
+    "lot_sqft": null,
+    "year_built": 2005,
+    "listing_date": "2026-01-10"
+  },
+  "agent": {
+    "name": "Alex Turner",
+    "phone": "206-555-0202",
+    "broker": "Northwest Homes"
+  },
+  "description": "Variant test record: intentionally altered price, bed count, and square footage to create a discrepancy.",
+  "images": [
+    "https://cdn.greenstrealty.com/listings/stoneway-condos/1.jpg"
+  ],
+  "sources": [
+    {
+      "source": "https://www.greenstrealty.com/properties/profile/304-s-state-st",
+      "extracted_at": "2026-01-14T22:05:00Z",
+      "snippets": [
+        { "field": "price", "text": "$425,000" },
+        { "field": "beds", "text": "2 beds" },
+        { "field": "sqft", "text": "920 sq ft" }
+      ]
+    }
+  ],
+  "ground_truth": false,
+  "note": "This record intentionally differs from the source to test discrepancy detection.",
+  "created_at": "2026-01-14T22:05:00Z",
+  "updated_at": "2026-01-14T22:05:00Z"
+}
+
+]

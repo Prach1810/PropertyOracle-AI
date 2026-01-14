@@ -17,6 +17,7 @@ h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
 idna==3.11
+iniconfig==2.3.0
 itsdangerous==2.2.0
 Jinja2==3.1.6
 jiter==0.12.0
@@ -35,11 +36,14 @@ openai==2.15.0
 orjson==3.11.5
 ormsgpack==1.12.1
 packaging==25.0
+pluggy==1.6.0
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pydantic==2.12.5
 pydantic_core==2.41.5
+Pygments==2.19.2
 pymongo==4.16.0
+pytest==9.0.2
 python-dotenv==1.2.1
 PyYAML==6.0.3
 requests==2.32.5
