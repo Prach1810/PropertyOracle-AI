@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from agent import agent_executor # Import the graph we just built
+from agent import agent_executor
 
 app = Flask(__name__)
 CORS(app)
