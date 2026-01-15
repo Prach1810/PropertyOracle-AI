@@ -21,8 +21,8 @@ The system follows an **Asynchronous Agentic Workflow**:
 
 * **Frontend:** React, TypeScript, Tailwind CSS, Vite
 * **Backend:** Python, Flask, Flask-CORS
-* **AI & Logic:** LangGraph, LangChain, Google Gemini API
-* **Data:** MongoDB (Ground Truth/Knowledge Base), BeautifulSoup (Scraper)
+* **AI & Logic:** LangGraph, LangChain, Google Gemini API, BeautifulSoup4
+* **Data:** MongoDB (Ground Truth/Knowledge Base), Job Results
 
 ## 🚀 Getting Started
 
@@ -48,3 +48,29 @@ python seed.py
 
 # Run the Orchestrator
 python app.py
+```
+
+### 2. Backend Setup
+```bash
+cd frontend
+# 1. Install dependencies
+npm install
+
+# 2. Ensure Tailwind CSS is generated
+npm run dev
+
+# 3. Open http://localhost:5173 to run the Agent
+```
+
+## Future Scope & Production Roadmap
+To scale PropertyOracle from a prototype to a production-grade SaaS, the following architectural upgrades are planned:
+
+1. Performance & Scalability
+    - Redis Task Queue: Replace the current in-memory threading model (_job_store) with Celery + Redis. This allows the system to handle thousands of concurrent scrapes without blocking the web server.
+    - Embedding Cache: Cache LLM responses and Vector Embeddings in Redis or pgvector. If a user analyzes "123 Main St" twice, the second result should be instant (O(1)).
+2. Advanced AI Capabilities
+    - Visual Analysis: Upgrade the scraper to capture listing images and use Gemini 1.5 Pro Vision to detect "flipped" conditions (e.g., identifying cheap laminate flooring vs. hardwood).
+    - Legal Doc Parsing: Add a module to ingest PDF HOA documents and flag rental restrictions.
+3. Robustness
+    - Browser Automation: Replace requests with Playwright or Puppeteer to handle JavaScript-heavy sites (Zillow, Redfin) that block simple scrapers.
+    - Proxy Rotation: Integrate a proxy network (e.g., BrightData) to prevent IP bans during high-volume scraping.
