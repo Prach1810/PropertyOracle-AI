@@ -141,21 +141,70 @@ def run_workflow_sync(initial_state):
 def chat_with_brief(state, user_message):
     """
     Called by app.py when the user sends a message.
-    It uses the 'state' (the results of the analysis) as context.
+    It builds a complete 'Property Dossier' including Web Data, AI Features, and Official Records.
     """
-    # Reconstruct the context from the saved job state
+    
+    # 1. Extract Web Data (The "Live" listing)
+    web_listing = {}
+    for item in state.get('raw_data', []):
+        if "Web" in item.get('source', '') or "Live" in item.get('source', ''):
+            web_listing = item.get('data', {})
+            break
+
+    # 2. Extract AI Features (The "Rich" details)
+    ai_features = ""
+    for item in state.get('raw_data', []):
+        if item.get('source') == "AI Extracted Features":
+            ai_features = item.get('data', '')
+            break
+
+    # 3. Extract Official Tax Record (The "Ground Truth")
+    tax_record = "Not Available"
+    for item in state.get('raw_data', []):
+        if item.get('source') == "OFFICIAL TAX RECORD":
+            data = item.get('data')
+            # Format it nicely if it's a dictionary
+            if isinstance(data, dict):
+                lines = []
+                for k, v in data.items():
+                    # Skip internal MongoDB IDs
+                    if k != "_id": 
+                        lines.append(f"{k}: {v}")
+                tax_record = "\n".join(lines)
+            else:
+                tax_record = str(data)
+            break
+            
+    # 4. Construct the Dossier
     context = f"""
-    PREVIOUS ANALYSIS SUMMARY:
-    {state.get('summary')}
+    You are an expert Real Estate Analyst. Answer the user's question using ONLY the data below.
     
-    IDENTIFIED DISCREPANCIES:
-    {state.get('discrepancies')}
+    === 1. LIVE WEB LISTING (What the website says) ===
+    Address: {web_listing.get('address', {}).get('line1', 'N/A')}
+    Price: ${web_listing.get('price', 'N/A')}
+    Layout: {web_listing.get('beds', 'N/A')} Beds / {web_listing.get('baths', 'N/A')} Baths
+    Sqft: {web_listing.get('sqft', 'N/A')}
+    Agent: {web_listing.get('agent', {}).get('name', 'N/A')}
     
-    RAW DATA SOURCES:
-    {state.get('raw_data')}
+    === 2. OFFICIAL TAX RECORD (Government Data) ===
+    {tax_record}
+    
+    === 3. AI EXTRACTED DETAILS (Amenities & Vibe) ===
+    {ai_features}
+    
+    === 4. ANALYSIS & ALERTS ===
+    Summary: {state.get('summary')}
+    Discrepancies: {state.get('discrepancies')}
     """
     
-    system = "You are a helpful real estate assistant. Answer based strictly on the context provided."
+    # 5. System Prompt
+    system_prompt = (
+        "You are a helpful Real Estate Assistant. "
+        "Use the provided 'OFFICIAL TAX RECORD' to verify claims if asked. "
+        "Use the 'AI EXTRACTED DETAILS' for amenity questions. "
+        "If the user asks about mismatches, refer to 'ANALYSIS & ALERTS'."
+    )
+    
     user_prompt = f"{context}\n\nUSER QUESTION: {user_message}"
     
-    return safe_call_gemini_chat(system, user_prompt)
+    return safe_call_gemini_chat(system_prompt, user_prompt)

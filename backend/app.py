@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from agent import run_workflow_sync  # returns final state dict
 from db import get_result, save_result
+from agent import chat_with_brief
 
 app = Flask(__name__)
 CORS(app)
@@ -63,7 +64,6 @@ def chat():
         return jsonify({"error": "result not found"}), 404
 
     # agent.chat_with_brief should use the LLM with context (brief + sources + history)
-    from agent import chat_with_brief
     answer = chat_with_brief(state, message)
     return jsonify({"answer": answer}), 200
 
