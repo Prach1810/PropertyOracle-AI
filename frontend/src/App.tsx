@@ -212,21 +212,6 @@ function App() {
         </div>
       </div>
 
-      {/* Navigation Bar
-      <nav className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center gap-6">
-          <button className="text-sm font-semibold text-blue-600 px-4 py-2 rounded-lg bg-blue-50">
-            Dashboard
-          </button>
-          <button className="text-sm font-medium text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-all">
-            History
-          </button>
-          <button className="text-sm font-medium text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-all">
-            Settings
-          </button>
-        </div>
-      </nav> */}
-
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         

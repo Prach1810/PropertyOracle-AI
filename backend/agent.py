@@ -49,6 +49,9 @@ def extract_rich_details(raw_text_data):
     - Parking Info
     - Lease Terms
     - Utilities included (if any)
+    - Location details
+    - Availability of the apartment/house
+    - Any other notable features
     """
     return safe_call_gemini_chat(system_prompt, user_prompt)
 
