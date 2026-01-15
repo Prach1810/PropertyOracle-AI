@@ -11,7 +11,7 @@ load_dotenv()
 # Initialize the Model once (efficient)
 # using "gemini-1.5-flash" as it's fast and cheap for agents
 _llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
+    model="gemini-2.0-flash",
     temperature=0.2,
     max_retries=2,
 )
@@ -28,6 +28,7 @@ def call_gemini_chat(system_prompt, user_prompt, max_tokens=512, temperature=0.2
         
         # Invoke the model
         response = _llm.invoke(messages)
+        # print("LLM Response:", response.content)
         
         # Return just the text content
         return response.content

@@ -1,11 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  background-color: #ffffff; /* Default to white */
-  color: #0f172a;
-}
+@import "tailwindcss";
 
 body {
   margin: 0;

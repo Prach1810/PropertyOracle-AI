@@ -1,6 +1,6 @@
 # PropertyOracle AI 🏠 🔍
 
-**Agentic Intelligence for Real Estate Forensic Analysis**
+**Agentic Intelligence for Real Estate Analysis**
 
 PropertyOracle is an AI-powered agent that moves beyond simple summarization. It autonomously scrapes live real estate listings, cross-references them against an internal "Ground Truth" database (MongoDB), and uses Google Gemini to identify risks, unpermitted additions, and financial discrepancies that a human might miss.
 
@@ -15,7 +15,7 @@ The system follows an **Asynchronous Agentic Workflow**:
 3.  **The Agent (LangGraph):** A state machine that executes a cyclic workflow:
     * **Tool Usage:** Scrapes live web data (BeautifulSoup).
     * **RAG :** Queries MongoDB for tax records/historical data.
-    * **Reasoning:** Uses Gemini 1.5 Flash to compare data sources and synthesize a brief.
+    * **Reasoning:** Uses Gemini 2 Flash to compare data sources and synthesize a brief.
 
 ## 🛠 Tech Stack
 

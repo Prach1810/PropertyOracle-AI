@@ -15,16 +15,7 @@
     "agent": { "name": "Jane Doe", "phone": "555-555-5555", "broker": "Acme Realty" },
     "description": "Charming 3 bed home near downtown.",
     "images": [],
-    "sources": [
-      {
-        "source": "https://example-listing.com/123-main-st",
-        "extracted_at": "2026-01-14T20:00:00Z",
-        "snippets": [
-          { "field": "price", "text": "$425,000" },
-          { "field": "beds", "text": "3 beds" }
-        ]
-      }
-    ],
+    "sources": [],
     "ground_truth": true,
     "created_at": "2026-01-14T20:00:00Z",
     "updated_at": "2026-01-14T20:00:00Z"
@@ -44,61 +35,41 @@
     "agent": { "name": "John Smith", "phone": "555-666-7777", "broker": "Neighborhood Homes" },
     "description": "Updated bungalow with large yard.",
     "images": [],
-    "sources": [
-      {
-        "source": "https://example-listing.com/456-elm-st",
-        "extracted_at": "2026-01-14T20:00:00Z",
-        "snippets": [
-          { "field": "price", "text": "$350,000" },
-          { "field": "sqft", "text": "1,400 sqft" }
-        ]
-      }
-    ],
+    "sources": [],
     "ground_truth": true,
     "created_at": "2026-01-14T20:00:00Z",
     "updated_at": "2026-01-14T20:00:00Z"
   },
   {
-  "property_id": "greenst_001_stoneway",
-  "source_url": "https://www.greenstrealty.com/properties/profile/stoneway-condos",
-  "address": {
-    "line1": "Stoneway Condos",
-    "line2": "",
-    "city": "CHAMPAIGN",
-    "state": "IL",
-    "zip": "61820"
-  },
-  "listing": {
-    "price": 1995,
-    "beds": 3,
-    "baths": 2.5,
-    "sqft": 1470,
-    "lot_sqft": null,
-    "year_built": 2005,
-    "listing_date": "2026-01-10"
-  },
-  "agent": {
-    "name": "Green Street Realty",
-    "phone": "217-356-8750",
-    "broker": "Green Street Realty"
-  },
-  "description": "Bright 3‑bed condo in Stoneway Condos with updated kitchen, in‑unit laundry, walk in closet and secure parking.",
-  "images": [],
-  "sources": [
-    {
-      "source": "https://www.greenstrealty.com/properties/profile/stoneway-condos",
-      "extracted_at": "2026-01-14T22:00:00Z",
-      "snippets": [
-        { "field": "price", "text": "$1995" },
-        { "field": "beds", "text": "3 beds" },
-        { "field": "sqft", "text": "1470 sq ft" }
-      ]
-    }
-  ],
-  "ground_truth": true,
-  "verified_by": "seed_script",
-  "created_at": "2026-01-14T22:00:00Z",
-  "updated_at": "2026-01-14T22:00:00Z"
+    "property_id": "greenst_001_stoneway",
+    "source_url": "https://www.greenstrealty.com/properties/profile/stoneway-condos",
+    "address": {
+      "line1": "3310-3316 Stoneway", 
+      "line2": "",
+      "city": "Champaign",
+      "state": "IL",
+      "zip": "61822"
+    },
+    "listing": {
+      "price": 350000,
+      "beds": 3,
+      "baths": 2.5,
+      "sqft": 1470,
+      "year_built": 2005,
+      "listing_date": "2026-01-10",
+      "tax_assessed_value": 350000
+    },
+    "agent": {
+      "name": "Green Street Realty",
+      "phone": "217-356-8750",
+      "broker": "Green Street Realty"
+    },
+    "description": "Bright 3‑bed condo in Stoneway Condos. Official Tax Record.",
+    "images": [],
+    "sources": [],
+    "ground_truth": true,
+    "created_at": "2026-01-14T22:00:00Z",
+    "updated_at": "2026-01-14T22:00:00Z"
 },
 {
   "property_id": "greenst_002_state_st",
@@ -112,7 +83,7 @@
   },
   "listing": {
     "price": 895,
-    "beds": 3,
+    "beds": 1,
     "baths": 1,
     "sqft": 1050,
     "lot_sqft": null,
@@ -120,29 +91,16 @@
     "listing_date": "2026-01-10"
   },
   "agent": {
-    "name": "Alex Turner",
-    "phone": "206-555-0202",
-    "broker": "Northwest Homes"
+    "name": "Green Street Realty",
+    "phone": "217-356-8750",
+    "broker": "Green Street Realty"
   },
-  "description": "Variant test record: intentionally altered price, bed count, and square footage to create a discrepancy.",
-  "images": [
-    "https://cdn.greenstrealty.com/listings/stoneway-condos/1.jpg"
-  ],
-  "sources": [
-    {
-      "source": "https://www.greenstrealty.com/properties/profile/304-s-state-st",
-      "extracted_at": "2026-01-14T22:05:00Z",
-      "snippets": [
-        { "field": "price", "text": "$425,000" },
-        { "field": "beds", "text": "2 beds" },
-        { "field": "sqft", "text": "920 sq ft" }
-      ]
-    }
-  ],
-  "ground_truth": false,
+  "description": "Charming 1B1B apartment, close to Downtown and Campus.",
+  "images": [],
+  "sources": [],
+  "ground_truth": true,
   "note": "This record intentionally differs from the source to test discrepancy detection.",
   "created_at": "2026-01-14T22:05:00Z",
   "updated_at": "2026-01-14T22:05:00Z"
 }
-
 ]

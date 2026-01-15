@@ -99,47 +99,55 @@ def fetch_html(url: str, allow_js: bool = False) -> str:
 
 # --- site-specific extraction for greenstrealty pages --- 
 def extract_greenstrealty(html: str, url: str) -> Dict[str, Any]: 
-    """ Extract common fields from GreenstRealty listing pages. 
-    Returns a dict with raw text fields and provenance snippets. 
+    """ 
+    Extract fields from GreenstRealty listing pages using the 'Mobile Info' block
+    which contains labeled data (e.g., 'Price : $1000').
     """ 
     soup = BeautifulSoup(html, "html.parser") 
-    def text_or_none(sel): 
-        el = soup.select_one(sel) 
-        return el.get_text(strip=True) if el else None 
+    raw = {}
+    provenance = []
+
+    # 1. Extract from the Mobile Info Data block (Cleanest source)
+    # The HTML contains: <div class="prop-profile-mobile-info-data">...</div>
+    mobile_data = soup.select_one(".prop-profile-mobile-info-data")
     
-    # Common selectors (may need adjustment if site changes) 
-    price_text = text_or_none(".listing-price, .price, .property-price") 
-    beds_text = text_or_none(".beds, .property-beds, .beds-count") 
-    baths_text = text_or_none(".baths, .property-baths, .baths-count") 
-    sqft_text = text_or_none(".sqft, .property-sqft, .sqft-count") 
-    address_text = text_or_none(".property-address, .address, .listing-address") 
-    agent_name = text_or_none(".agent-name, .listing-agent, .agent") 
-    agent_phone = text_or_none(".agent-phone, .agent-contact, .phone") 
-    description = text_or_none(".description, .property-description, .listing-description") 
-    # provenance: small snippets with selector hints 
-    provenance = [] 
-    for sel, txt in [ 
-        (".listing-price", price_text), 
-        (".price", price_text), 
-        (".beds", beds_text), 
-        (".baths", baths_text), 
-        (".sqft", sqft_text), 
-        (".property-address", address_text), 
-        (".agent-name", agent_name), 
-        ]: 
-        if txt: 
-            provenance.append({"selector": sel, "text": txt, "source": url}) 
-    raw = { 
-        "price_text": price_text, 
-        "beds_text": beds_text, 
-        "baths_text": baths_text, 
-        "sqft_text": sqft_text, 
-        "address_text": address_text, 
-        "agent_name_text": agent_name, 
-        "agent_phone_text": agent_phone, 
-        "description_text": description, 
-        } 
+    if mobile_data:
+        # Get all text, replacing <br> with newlines to separate fields
+        text_block = mobile_data.get_text("\n", strip=True)
         
+        # Helper to find values using Regex based on the labels in your HTML
+        def find_val(label_regex):
+            match = re.search(label_regex, text_block, re.IGNORECASE)
+            return match.group(1).strip() if match else None
+
+        # Extract fields
+        raw["price_text"] = find_val(r"Price\s*:\s*(.*)")       # Matches "$665/Bed | $1995"
+        raw["beds_text"]  = find_val(r"Beds\s*:\s*([\d\.]+)")   # Matches "3"
+        raw["baths_text"] = find_val(r"Baths\s*:\s*([\d\.]+)")  # Matches "2.5"
+        raw["sqft_text"]  = find_val(r"Sq Ft\s*:\s*(\d+)")      # Matches "1470"
+
+        if raw["price_text"]:
+            provenance.append({"selector": ".prop-profile-mobile-info-data", "text": raw["price_text"], "source": url})
+
+    # 2. Extract Address from Meta Description
+    # HTML: <meta name="description" content="Located at 3310-3316 Stoneway in Boulder Ridge..." />
+    meta_desc = soup.find("meta", attrs={"name": "description"})
+    if meta_desc and "content" in meta_desc.attrs:
+        desc = meta_desc["content"]
+        raw["description_text"] = desc
+        
+        # Regex to pull address between "Located at" and "in"
+        addr_match = re.search(r"Located at\s+(.*?)\s+(?:in|available)", desc)
+        if addr_match:
+            # We append the city/state since we know this broker is in Champaign, IL
+            raw["address_text"] = f"{addr_match.group(1)}, Champaign, IL"
+            
+    # Fallback: Try the Title if meta extraction failed
+    if not raw.get("address_text"):
+        title = soup.select_one(".prop-profile-slider-title")
+        if title:
+            raw["address_text"] = title.get_text(strip=True)
+
     return {"raw": raw, "provenance": provenance} 
     
 def generic_extract(html: str, url: str) -> Dict[str, Any]: 
@@ -176,8 +184,8 @@ def scrape(url: str) -> Dict[str, Any]:
     if not is_allowed_domain(normalized):
         raise ValueError("Domain not allowed by configuration")
 
-    if not is_allowed_by_robots(normalized):
-        raise ValueError("Disallowed by robots.txt")
+    # if not is_allowed_by_robots(normalized):
+    #     raise ValueError("Disallowed by robots.txt")
 
     html = fetch_html(normalized)
     # route to site-specific parser

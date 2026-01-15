@@ -7,14 +7,27 @@ from typing import Optional, Dict, Any
 def parse_price(text: Optional[str]) -> Optional[int]:
     if not text:
         return None
-    # remove currency symbols and non-digits
-    digits = re.sub(r"[^\d]", "", text)
-    if not digits:
-        return None
-    try:
-        return int(digits)
-    except ValueError:
-        return None
+    
+    # 1. Find all dollar amounts in the string
+    # e.g. "$665/Bed | $1995" -> ['665', '1995']
+    matches = re.findall(r"\$([\d,]+)", text)
+    
+    if not matches:
+        # Fallback: remove non-digits and try parsing the whole blob
+        digits = re.sub(r"[^\d]", "", text)
+        return int(digits) if digits else None
+
+    # 2. Convert to integers
+    prices = []
+    for m in matches:
+        try:
+            val = int(m.replace(",", ""))
+            prices.append(val)
+        except ValueError:
+            continue
+
+    # 3. Return the largest value (assuming that is the total rent)
+    return max(prices) if prices else None
 
 
 def parse_beds(text: Optional[str]) -> Optional[float]:
