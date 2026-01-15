@@ -70,21 +70,6 @@ def is_allowed_domain(url: str) -> bool:
     except Exception:
         return False
 
-def is_allowed_by_robots(url: str, user_agent: str = HEADERS["User-Agent"]) -> bool:
-    """
-    Check robots.txt for the host. Returns True if allowed or robots.txt unreachable.
-    """
-    try:
-        parsed = urlparse(url)
-        rp = robotparser.RobotFileParser()
-        robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
-        rp.set_url(robots_url)
-        rp.read()
-        return rp.can_fetch(user_agent, url)
-    except Exception:
-        # If robots.txt cannot be fetched, be permissive but log this in production
-        return True
-
 def fetch_html(url: str, allow_js: bool = False) -> str:
     """
     Fetch HTML with retries and timeouts. If allow_js is True, you can plug in Playwright
@@ -183,9 +168,6 @@ def scrape(url: str) -> Dict[str, Any]:
 
     if not is_allowed_domain(normalized):
         raise ValueError("Domain not allowed by configuration")
-
-    # if not is_allowed_by_robots(normalized):
-    #     raise ValueError("Disallowed by robots.txt")
 
     html = fetch_html(normalized)
     # route to site-specific parser
