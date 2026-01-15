@@ -50,7 +50,7 @@ python seed.py
 python app.py
 ```
 
-### 2. Backend Setup
+### 2. Frontend Setup
 ```bash
 cd frontend
 # 1. Install dependencies
