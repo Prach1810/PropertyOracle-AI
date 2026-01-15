@@ -60,7 +60,7 @@ def run_workflow_sync(initial_state):
     url = initial_state.get("address") # This comes from React as the URL
     state = initial_state.copy()
     
-    print(f"🚀 [AGENT] Starting analysis for: {url}")
+    print(f"[AGENT] Starting analysis for: {url}")
 
     # STEP A: SCRAPE & NORMALIZE
     try:
@@ -95,7 +95,7 @@ def run_workflow_sync(initial_state):
     })
 
     # STEP C: DATABASE LOOKUP (RAG)
-    print(f"💾 [AGENT] Searching internal DB for: {detected_address}...")
+    print(f"[AGENT] Searching internal DB for: {detected_address}...")
     canonical = fetch_canonical_by_address(detected_address)
     print("-+-+-+-+-+-+-", canonical)
     
@@ -103,10 +103,10 @@ def run_workflow_sync(initial_state):
         print(" Found Ground Truth record!")
         # Remove MongoDB ID for cleaner LLM input
         canonical.pop('_id', None)
-        state["raw_data"].append({"source": "OFFICIAL TAX RECORD", "data": canonical})
+        state["raw_data"].append({"source": "OFFICIAL RECORD", "data": canonical})
     else:
         print("No internal records found.")
-        state["raw_data"].append({"source": "OFFICIAL TAX RECORD", "data": "No matching records found."})
+        state["raw_data"].append({"source": "OFFICIAL RECORD", "data": "No matching records found."})
 
     # STEP D: PREPARE CONTEXT
     # Turn the list of data dictionaries into a string for Gemini
@@ -114,15 +114,15 @@ def run_workflow_sync(initial_state):
     for item in state["raw_data"]:
         context_str += f"\n=== SOURCE: {item['source']} ===\n{item['data']}\n"
 
-    print("-------", context_str)
+    # print("-------", context_str)
 
     # STEP E: ANALYZE DISCREPANCIES (The Logic)
     print("[AGENT] Reasoning with Gemini...")
     analyst_system = (
-        "You are a Forensic Real Estate Analyst. Compare the 'Live Web Listing' against the 'OFFICIAL TAX RECORD'.\n"
+        "You are a Forensic Real Estate Analyst. Compare the 'Live Web Listing' against the 'OFFICIAL RECORD'.\n"
         "STRICT RULES:\n"
         "1. ONLY report a discrepancy if BOTH sources have data but they disagree (e.g. Web price $500k vs Tax value $300k).\n"
-        "2. If the 'OFFICIAL TAX RECORD' is missing or says 'No matching records', return exactly: 'No discrepancies found (Ground truth unavailable).'\n"
+        "2. If the 'OFFICIAL RECORD' is missing or says 'No matching records', return exactly: 'No discrepancies found (Ground truth unavailable).'\n"
         "3. Do NOT flag missing data as a warning."
     )
     discrepancies = safe_call_gemini_chat(analyst_system, context_str)
@@ -161,10 +161,10 @@ def chat_with_brief(state, user_message):
             ai_features = item.get('data', '')
             break
 
-    # 3. Extract Official Tax Record (The "Ground Truth")
+    # 3. Extract OFFICIAL RECORD (The "Ground Truth")
     tax_record = "Not Available"
     for item in state.get('raw_data', []):
-        if item.get('source') == "OFFICIAL TAX RECORD":
+        if item.get('source') == "OFFICIAL RECORD":
             data = item.get('data')
             # Format it nicely if it's a dictionary
             if isinstance(data, dict):
@@ -189,7 +189,7 @@ def chat_with_brief(state, user_message):
     Sqft: {web_listing.get('sqft', 'N/A')}
     Agent: {web_listing.get('agent', {}).get('name', 'N/A')}
     
-    === 2. OFFICIAL TAX RECORD (Government Data) ===
+    === 2. OFFICIAL RECORD (Government Data) ===
     {tax_record}
     
     === 3. AI EXTRACTED DETAILS (Amenities & Vibe) ===
@@ -203,7 +203,7 @@ def chat_with_brief(state, user_message):
     # 5. System Prompt
     system_prompt = (
         "You are a helpful Real Estate Assistant. "
-        "Use the provided 'OFFICIAL TAX RECORD' to verify claims if asked. "
+        "Use the provided 'OFFICIAL RECORD' to verify claims if asked. "
         "Use the 'AI EXTRACTED DETAILS' for amenity questions. "
         "If the user asks about mismatches, refer to 'ANALYSIS & ALERTS'."
     )
