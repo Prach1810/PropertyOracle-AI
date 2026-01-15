@@ -68,6 +68,28 @@ const SourceModal = ({ title, content, onClose }: { title: string, content: stri
   );
 };
 
+// Helper to render values that might be objects
+const renderNestedValue = (value: any) => {
+  if (value === null || value === undefined) return <span className="text-gray-300">-</span>;
+  
+  // If it's a nested object (like Address or Agent), render a mini-list
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    return (
+      <div className="flex flex-col gap-0.5 mt-1 border-l-2 border-indigo-100 pl-2">
+        {Object.entries(value).map(([k, v]) => (
+          <div key={k} className="flex justify-between text-[10px]">
+             <span className="text-gray-400 font-medium mr-2 lowercase">{k}:</span>
+             <span className="text-gray-600 font-mono text-right truncate max-w-[120px]">{String(v)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  
+  // Default for strings/numbers/booleans
+  return <span className="text-gray-700 truncate" title={String(value)}>{String(value)}</span>;
+};
+
 // --- Main App Component ---
 function App() {
   const [address, setAddress] = useState('');
@@ -317,7 +339,7 @@ function App() {
                             {Object.entries(r.data).map(([key, val]) => (
                               <div key={key} className="flex flex-col">
                                 <span className="font-bold text-gray-500 uppercase text-[10px] mb-1">{key}</span>
-                                <span className="text-gray-800 truncate font-medium" title={String(val)}>{String(val)}</span>
+                                {renderNestedValue(val)}
                               </div>
                             ))}
                           </div>

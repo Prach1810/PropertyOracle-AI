@@ -1,5 +1,5 @@
 # tests/test_normalize.py
-from normalize import parse_price, parse_beds, parse_sqft, normalize_address, normalize_scraped
+from scraper.normalize import parse_price, parse_beds, parse_sqft, normalize_address, normalize_scraped
 
 def test_parse_price_and_beds_sqft():
     assert parse_price("$425,000") == 425000
